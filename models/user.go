@@ -20,21 +20,21 @@ type User struct {
 }
 
 func CreateUser(username, password, nickname string, sex int, avatar, phone, email string) error {
-	return global.DB.Table("user").Select("username", "password", "nickname", "sex", "avatar", "phone", "email").
+	return global.DB.Table("users").Select("username", "password", "nickname", "sex", "avatar", "phone", "email").
 		Create(&User{Username: username, Password: password, Nickname: nickname, Sex: sex, Avatar: avatar, Phone: phone, Email: email}).Error
 }
 
 func DeleteUser(id int32) error {
-	return global.DB.Table("user").Where("id = ?", id).Delete(&User{}).Error
+	return global.DB.Table("users").Where("id = ?", id).Delete(&User{}).Error
 }
 
 func ListUser(pageSize, pageNum int) ([]*User, int64, error) {
 	var rows []*User
 	//计算列表数量
 	var count int64
-	global.DB.Table("user").Count(&count)
+	global.DB.Table("users").Count(&count)
 
-	if err := global.DB.Table("user").Order("id desc").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&rows).Error; err != nil {
+	if err := global.DB.Table("users").Order("id desc").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&rows).Error; err != nil {
 		return nil, 0, err
 	}
 	return rows, count, nil
@@ -42,7 +42,7 @@ func ListUser(pageSize, pageNum int) ([]*User, int64, error) {
 
 func ViewUser(id int32) (*User, error) {
 	row := new(User)
-	if err := global.DB.Table("user").Where("id = ?", id).First(&row).Error; err != nil {
+	if err := global.DB.Table("users").Where("id = ?", id).First(&row).Error; err != nil {
 		return nil, err
 	}
 	return row, nil
