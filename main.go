@@ -2,9 +2,9 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/provider-go/pkg/types"
 	"github.com/provider-go/user/global"
 	"github.com/provider-go/user/router"
-	"gorm.io/gorm"
 )
 
 type Plugin struct{}
@@ -13,8 +13,8 @@ func CreatePlugin() *Plugin {
 	return &Plugin{}
 }
 
-func CreatePluginAndDB(db *gorm.DB) *Plugin {
-	global.DB = db
+func CreatePluginAndDB(instance types.PluginNeedInstance) *Plugin {
+	global.DB = instance.Mysql
 	return &Plugin{}
 }
 
