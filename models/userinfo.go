@@ -6,7 +6,7 @@ import (
 )
 
 type UserInfo struct {
-	DID        string    `json:"did" gorm:"column:did;type:varchar(100);not null;default:'';comment:'主键'"`
+	DID        string    `json:"did" gorm:"column:did;type:varchar(100);not null;default:'';primary_key;comment:'主键'"`
 	Username   string    `json:"username" gorm:"column:username;type:varchar(20);not null;default:'';comment:用户名"` // 用户名
 	Password   string    `json:"password" gorm:"column:password;type:varchar(50);not null;default:'';comment:密码"`  // 密码
 	Nickname   string    `json:"nickname" gorm:"column:nickname;type:varchar(20);not null;default:'';comment:昵称"`  // 昵称
