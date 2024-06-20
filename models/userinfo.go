@@ -1,7 +1,9 @@
 package models
 
 import (
+	"errors"
 	"github.com/provider-go/user/global"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -53,6 +55,10 @@ func ListUserInfo(pageSize, pageNum int) ([]*UserInfo, int64, error) {
 func ViewUserInfo(did string) (*UserInfo, error) {
 	row := new(UserInfo)
 	if err := global.DB.Table("user_infos").Where("did = ?", did).First(&row).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// 记录不存在的逻辑处理
+			return nil, errors.New("ErrRecordNotFound")
+		}
 		return nil, err
 	}
 	return row, nil

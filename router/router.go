@@ -16,6 +16,7 @@ type Router struct{}
 func (s *Router) InitRouter(Router *gin.RouterGroup) {
 	{
 		// user_infos 表操作
+		Router.POST("loginByPlugin", api.LoginByPlugin)
 		Router.POST("info", api.CreateInfo)
 		Router.PUT("info", api.UpdateInfo)
 		Router.DELETE("info", api.DeleteInfo)
