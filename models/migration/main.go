@@ -15,7 +15,7 @@ func main() {
 	}
 
 	// 迁移 schema
-	err = DB.AutoMigrate(models.UserInfo{}, models.UserKey{})
+	err = DB.AutoMigrate(models.UserInfo{})
 	if err != nil {
 		logger.Error(err)
 	}

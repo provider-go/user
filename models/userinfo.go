@@ -8,6 +8,7 @@ import (
 )
 
 type UserInfo struct {
+	Id         int32     `json:"id" gorm:"auto_increment;primary_key;comment:'主键'"`
 	DID        string    `json:"did" gorm:"column:did;type:varchar(100);not null;default:'';primary_key;comment:'主键'"`
 	Username   string    `json:"username" gorm:"column:username;type:varchar(20);not null;default:'';comment:用户名"` // 用户名
 	Password   string    `json:"password" gorm:"column:password;type:varchar(50);not null;default:'';comment:密码"`  // 密码
@@ -25,8 +26,9 @@ func CreateUserInfo(did, username, nickname string, sex int, avatar, phone, emai
 		Create(&UserInfo{DID: did, Username: username, Nickname: nickname, Sex: sex, Avatar: avatar, Phone: phone, Email: email}).Error
 }
 
-func UpdateUserInfo(did, username, nickname string, sex int, avatar, phone, email string) error {
-	return global.DB.Table("user_infos").Where("did = ?", did).Updates(map[string]interface{}{
+func UpdateUserInfo(id int, did, username, nickname string, sex int, avatar, phone, email string) error {
+	return global.DB.Table("user_infos").Where("id = ?", id).Updates(map[string]interface{}{
+		"did":      did,
 		"username": username,
 		"nickname": nickname,
 		"sex":      sex,
@@ -36,8 +38,8 @@ func UpdateUserInfo(did, username, nickname string, sex int, avatar, phone, emai
 	}).Error
 }
 
-func DeleteUserInfo(did string) error {
-	return global.DB.Table("user_infos").Where("did = ?", did).Delete(&UserInfo{}).Error
+func DeleteUserInfo(id int) error {
+	return global.DB.Table("user_infos").Where("id = ?", id).Delete(&UserInfo{}).Error
 }
 
 func ListUserInfo(pageSize, pageNum int) ([]*UserInfo, int64, error) {
@@ -52,7 +54,19 @@ func ListUserInfo(pageSize, pageNum int) ([]*UserInfo, int64, error) {
 	return rows, count, nil
 }
 
-func ViewUserInfo(did string) (*UserInfo, error) {
+func ViewUserInfo(id int) (*UserInfo, error) {
+	row := new(UserInfo)
+	if err := global.DB.Table("user_infos").Where("id = ?", id).First(&row).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// 记录不存在的逻辑处理
+			return nil, errors.New("ErrRecordNotFound")
+		}
+		return nil, err
+	}
+	return row, nil
+}
+
+func ViewUserInfoByDID(did string) (*UserInfo, error) {
 	row := new(UserInfo)
 	if err := global.DB.Table("user_infos").Where("did = ?", did).First(&row).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

@@ -31,6 +31,7 @@ func CreateInfo(ctx *gin.Context) {
 func UpdateInfo(ctx *gin.Context) {
 	json := make(map[string]interface{})
 	_ = ctx.BindJSON(&json)
+	id := output.ParamToInt(json["id"])
 	did := output.ParamToString(json["did"])
 	username := output.ParamToString(json["username"])
 	nickname := output.ParamToString(json["nickname"])
@@ -38,7 +39,7 @@ func UpdateInfo(ctx *gin.Context) {
 	avatar := output.ParamToString(json["avatar"])
 	phone := output.ParamToString(json["phone"])
 	email := output.ParamToString(json["email"])
-	err := models.UpdateUserInfo(did, username, nickname, sex, avatar, phone, email)
+	err := models.UpdateUserInfo(id, did, username, nickname, sex, avatar, phone, email)
 	if err != nil {
 		output.ReturnErrorResponse(ctx, 9999, "系统错误~")
 	} else {
@@ -47,8 +48,8 @@ func UpdateInfo(ctx *gin.Context) {
 }
 
 func DeleteInfo(ctx *gin.Context) {
-	did := output.ParamToString(ctx.Query("did"))
-	err := models.DeleteUserInfo(did)
+	id := output.ParamToInt(ctx.Query("id"))
+	err := models.DeleteUserInfo(id)
 	if err != nil {
 		output.ReturnErrorResponse(ctx, 9999, "系统错误~")
 	} else {
@@ -72,8 +73,8 @@ func ListInfo(ctx *gin.Context) {
 }
 
 func ViewInfo(ctx *gin.Context) {
-	did := output.ParamToString(ctx.Query("did"))
-	row, err := models.ViewUserInfo(did)
+	id := output.ParamToInt(ctx.Query("id"))
+	row, err := models.ViewUserInfo(id)
 	if err != nil {
 		output.ReturnErrorResponse(ctx, 9999, "系统错误~")
 	} else {
@@ -93,7 +94,7 @@ func LoginByPlugin(ctx *gin.Context) {
 		return
 	}
 	// 对比数据库记录
-	item, err := models.ViewUserInfo(did)
+	item, err := models.ViewUserInfoByDID(did)
 	if err != nil {
 		if err.Error() == "ErrRecordNotFound" {
 			output.ReturnErrorResponse(ctx, 9999, "用户不存在~")
