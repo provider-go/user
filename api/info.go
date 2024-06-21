@@ -105,6 +105,6 @@ func LoginByPlugin(ctx *gin.Context) {
 		return
 	}
 	// 生成token
-	token := middleware.InitJwt(global.SecretKey).GenerateToken(item.Username)
+	token := middleware.InitJwt(global.SecretKey).GenerateToken(item.DID)
 	output.ReturnSuccessResponse(ctx, token)
 }
